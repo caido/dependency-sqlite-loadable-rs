@@ -24,7 +24,7 @@ libsqlite3-sys = { version = "0.30.1", default-features = false, features = [
 ] }
 
 [features]
-default = ["dynamic"]
+default = ["static"]
 dynamic = ["sqlite3ext-sys"]
 static = ["libsqlite3-sys"]
 exec = []

@@ -32,7 +32,7 @@ pub fn sqlite_entrypoint(_attr: TokenStream, item: TokenStream) -> TokenStream {
                 pub unsafe extern "C" fn #c_entrypoint(
                     db: *mut sqlite3,
                     pz_err_msg: *mut *mut c_char,
-                    p_api: *mut sqlite3_api_routines,
+                    p_api: *const sqlite3_api_routines,
                 ) -> c_int {
                     register_entrypoint(db, pz_err_msg, p_api, #prefixed_original_function)
                 }

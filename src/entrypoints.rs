@@ -14,7 +14,7 @@ use std::os::raw::{c_char, c_int};
 pub fn register_entrypoint<F>(
     db: *mut sqlite3,
     _pz_err_msg: *mut *mut c_char,
-    p_api: *mut sqlite3_api_routines,
+    p_api: *const sqlite3_api_routines,
     callback: F,
 ) -> c_int
 where

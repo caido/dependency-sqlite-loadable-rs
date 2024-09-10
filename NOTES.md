@@ -35,7 +35,6 @@ Solution: the `ext.rs` functions need to export different functions (either `pAp
 
 Though there's no `crate_type="cdylib"` macro we can use, so gotta introduce a new feature flag. Also means builds will be weird.
 
-
 ```rs
 #[cfg(feature = "static")]
 pub unsafe fn sqlite3ext_user_data2(context: *mut sqlite3_context) -> *mut c_void {
@@ -102,9 +101,7 @@ pub extern "C" fn sqlite3_wasm_extra_init(_unused: *const std::ffi::c_char) -> s
     use sqlite_loadable::SQLITE_OK;
     println!("sqlite3_wasm_extra_init");
     unsafe {
-        sqlite_loadable::ext::sqlite3ext_auto_extension(std::mem::transmute(
-            sqlite3_hello_init as *const (),
-        ));
+        sqlite_loadable::ext::sqlite3ext_auto_extension(sqlite3_hello_init);
     }
 
     SQLITE_OK

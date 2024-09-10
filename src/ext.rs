@@ -32,7 +32,7 @@ pub use sqlite3ext_sys::{
 /// If creating a dynmically loadable extension, this MUST be redefined to point
 /// to a proper sqlite3_api_rountines module (from a entrypoint function).
 /// The "sqlite_entrypoint" macro will do this for you usually.
-static mut SQLITE3_API: *mut sqlite3_api_routines = std::ptr::null_mut();
+static mut SQLITE3_API: *const sqlite3_api_routines = std::ptr::null_mut();
 
 /// This function MUST be called in loadable extension before any of the below functions are invoked.
 /// (The sqlite_entrypoint function will do this for you).
@@ -41,7 +41,7 @@ static mut SQLITE3_API: *mut sqlite3_api_routines = std::ptr::null_mut();
 /// like sqlite3_value_text will segfault, because sqlite3ext.h does not include their proper definitions.
 /// Instead, a sqlite3_api_routines object is provided through the entrypoint at runtime, to which
 /// sqlite_loadable will redefine the static SQLITE3_API variable that the functions below requre.
-pub unsafe fn faux_sqlite_extension_init2(api: *mut sqlite3_api_routines) {
+pub unsafe fn faux_sqlite_extension_init2(api: *const sqlite3_api_routines) {
     if !api.is_null() {
         SQLITE3_API = api;
     }
@@ -606,7 +606,9 @@ pub unsafe fn sqlite3ext_mprintf(s: *const c_char) -> *mut c_char {
 }
 
 #[cfg(feature = "static")]
-pub unsafe fn sqlite3ext_auto_extension(f: unsafe extern "C" fn()) -> i32 {
+pub unsafe fn sqlite3ext_auto_extension(
+    f: unsafe extern "C" fn(*mut sqlite3, *mut *mut c_char, *const sqlite3_api_routines) -> c_int,
+) -> i32 {
     libsqlite3_sys::sqlite3_auto_extension(Some(f))
 }
 #[cfg(all(not(feature = "static"), feature = "dynamic"))]
